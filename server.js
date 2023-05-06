@@ -9,7 +9,7 @@ const connectDB = require("./database/db");
 //route paths
 const wildlifeObservationRouter = require("./routes/wildlifeObservationRoute");
 const bannerRouter = require("./routes/bannerRoute");
-
+const userRouter = require("./routes/userRoute");
 const port = process.env.PORT || 8000;
 const app = express();
 
@@ -39,6 +39,7 @@ app.get("/", (req, res) => {
 //Routes middleware
 app.use("/wildlife-observations", wildlifeObservationRouter);
 app.use("/banners", bannerRouter);
+app.use("/user", userRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
