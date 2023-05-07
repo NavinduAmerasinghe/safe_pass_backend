@@ -1,32 +1,36 @@
-require("dotenv").config();
 const express = require("express");
+const app = express();
+require("dotenv").config();
+const connectDB = require("./database/db");
+const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const cors = require("cors");
-const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const connectDB = require("./database/db");
+app.use(cookieParser());
+const errorHandler = require("./middleware/error");
 
 //route paths
-const wildlifeObservationRouter = require("./routes/wildlifeObservationRoute");
-const bannerRouter = require("./routes/bannerRoute");
-
-const port = process.env.PORT || 8000;
-const app = express();
+const wildlifeObservationRoute = require("./routes/wildlifeObservationRoute");
+const bannerRoute = require("./routes/bannerRoute");
+const userRoute = require("./routes/userRoute");
 
 // Call the connectDB function to connect to the database
 connectDB();
 
 //middlewares
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-
-app.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded());
-
-app.use(cors());
-app.use(express.json());
 app.use(morgan("dev"));
+app.use(bodyParser.json({ limit: "100mb" }));
+app.use(
+  bodyParser.urlencoded({
+    // to support URL-encoded bodies
+    limit: "100mb",
+    extended: false,
+  })
+);
+app.use(cors());
+
+// app.use(express.json());
+// app.use(express.urlencoded());
 
 app.get("/get", (req, res) => {
   res.send("Safe Pass");
@@ -37,8 +41,14 @@ app.get("/", (req, res) => {
 });
 
 //Routes middleware
-app.use("/wildlife-observations", wildlifeObservationRouter);
-app.use("/banners", bannerRouter);
+app.use("/wildlife-observations", wildlifeObservationRoute);
+app.use("/banners", bannerRoute);
+app.use("/user", userRoute);
+
+//Error Middleware
+app.use(errorHandler);
+
+const port = process.env.PORT || 8000;
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
