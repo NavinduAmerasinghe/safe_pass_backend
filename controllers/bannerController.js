@@ -11,6 +11,7 @@ exports.createBanner = async (req, res, next) => {
       const result = await cloudinary.uploader.upload(images[i], {
         folder: "banners",
         width: 1920,
+        height: 844,
         crop: "scale",
       });
 
@@ -36,7 +37,7 @@ exports.createBanner = async (req, res, next) => {
 //display banner
 exports.displayBanner = async (req, res, next) => {
   try {
-    const banners = await Banner.find();
+    const banners = await Banner.find().maxTimeMS(30000);
 
     res.status(201).json({
       success: true,

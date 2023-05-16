@@ -10,9 +10,9 @@ app.use(cookieParser());
 const errorHandler = require("./middleware/error");
 
 //route paths
-const wildlifeObservationRoute = require("./routes/wildlifeObservationRoute");
-const bannerRoute = require("./routes/bannerRoute");
-const userRoute = require("./routes/userRoute");
+const wildlifeObservationRoutes = require("./routes/wildlifeObservationRoute");
+const bannerRoutes = require("./routes/banner");
+const authRoutes = require("./routes/auth");
 
 // Call the connectDB function to connect to the database
 connectDB();
@@ -41,9 +41,9 @@ app.get("/", (req, res) => {
 });
 
 //Routes middleware
-app.use("/wildlife-observations", wildlifeObservationRoute);
-app.use("/banners", bannerRoute);
-app.use("/user", userRoute);
+app.use("/api", wildlifeObservationRoutes);
+app.use("/api", bannerRoutes);
+app.use("/api", authRoutes);
 
 //Error Middleware
 app.use(errorHandler);

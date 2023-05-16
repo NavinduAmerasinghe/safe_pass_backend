@@ -3,6 +3,9 @@ const ErrorResponse = require("../utils/errorResponse");
 const errorHandler = (err, req, res, next) => {
   console.log(err);
 
+  let error = { ...err };
+  error.message = err.message;
+
   // Mongoose Bad ObjectId
   if (err.name === "CastError") {
     const message = "Ressource not found";

@@ -1,26 +1,30 @@
 const express = require("express");
 const router = express.Router();
-const wildlifeObservationController = require("../controllers/wildlifeObservationController");
+const {
+  createObservation,
+  getObservations,
+  getObservation,
+  updateObservation,
+  deleteObservation,
+  observationSummary,
+} = require("../controllers/wildlifeObservationController");
 
 // Create a new wildlife observation
-router.post("/observations", wildlifeObservationController.createObservation);
+router.post("/observations", createObservation);
 
 // Get all wildlife observations
-router.get("/observations", wildlifeObservationController.getObservations);
+router.get("/observations", getObservations);
 
 // Get a single wildlife observation by ID
-router.get("/observations/:id", wildlifeObservationController.getObservation);
+router.get("/observations/:id", getObservation);
 
 // Update a single wildlife observation by ID
-router.patch(
-  "/observations/:id",
-  wildlifeObservationController.updateObservation
-);
+router.patch("/observations/:id", updateObservation);
 
 // Delete a single wildlife observation by ID
-router.delete(
-  "/observations/:id",
-  wildlifeObservationController.deleteObservation
-);
+router.delete("/observations/:id", deleteObservation);
+
+// Get onservation summary
+router.get("/observation/summary", observationSummary);
 
 module.exports = router;

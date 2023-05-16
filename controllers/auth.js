@@ -5,9 +5,9 @@ exports.signup = async (req, res, next) => {
   const { email } = req.body;
   const userExist = await User.findOne({ email });
 
-  //   if (userExist) {
-  //     return next(new ErrorResponse("E-mail already exists", 400));
-  //   }
+  if (userExist) {
+    return next(new ErrorResponse("E-mail already exists", 400));
+  }
 
   try {
     const user = await User.create(req.body);
@@ -39,11 +39,13 @@ exports.signin = async (req, res, next) => {
     if (!isMatched) {
       return next(new ErrorResponse("Invalid credentials", 400));
     }
+
     // const token = await user.jwtGenerateToken();
     // res.status(200).json({
     //   success: true,
     //   token,
     // });
+
     generateToken(user, 200, res);
   } catch (error) {
     console.log(error);
@@ -59,11 +61,19 @@ const generateToken = async (user, statusCode, res) => {
     httpOnly: true,
     expires: new Date(Date.now() + process.env.EXPIRE_TOKEN),
   };
+  const userDetails = {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+  };
 
   res
     .status(statusCode)
     .cookie("token", token, options)
-    .json({ success: true, token });
+    .json({ success: true, token, user: userDetails });
 };
 
 //LOG OUT USER
@@ -72,6 +82,15 @@ exports.logout = (req, res, next) => {
   res.status(200).json({
     success: true,
     message: "Logged out",
+  });
+};
+
+// USESR PROFILE
+exports.userProfile = async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+  res.status(200).json({
+    sucess: true,
+    user,
   });
 };
 

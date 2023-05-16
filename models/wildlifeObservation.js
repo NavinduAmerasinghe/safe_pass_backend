@@ -1,52 +1,81 @@
 const mongoose = require("mongoose");
 
-const wildlifeObservationSchema = new mongoose.Schema({
-  animal_location: {
-    type: String,
-    required: true,
+const WildlifeObservationSchema = new mongoose.Schema(
+  {
+    animalName: {
+      type: String,
+      required: true,
+    },
+    // image: {
+    //   public_id: {
+    //     type: String,
+    //     required: true,
+    //   },
+    //   url: {
+    //     type: String,
+    //     required: true,
+    //   },
+    // },
+    image: {
+      type: String,
+      required: true,
+    },
+    taxonGroup: {
+      type: String,
+      enum: ["Birds", "Mammals", "Reptiles", "Amphibians"],
+      required: true,
+    },
+    location: {
+      type: {
+        type: String,
+        default: "Point",
+        enum: ["Point"],
+      },
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
+    },
+    observationDate: {
+      type: Date,
+      required: true,
+    },
+    observationTime: {
+      type: String,
+      required: true,
+      match: /^([0-1][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])\.\d{3}$/,
+    },
+    dayNight: {
+      type: String,
+      required: true,
+    },
+    climateType: {
+      type: String,
+      enum: ["Rainy", "Sunny", "Cloudy"],
+      required: true,
+    },
+    observationRoad: {
+      type: String,
+      enum: ["Urban Roads", "Rural Roads", "Mountain Roads", "Costal Roads"],
+      required: true,
+    },
+    roadCondition: {
+      type: String,
+      enum: ["Dirt Road", "Clear Road"],
+      required: true,
+    },
+    trafficType: {
+      type: String,
+      enum: ["Busy", "Quiet"],
+      required: true,
+    },
   },
-  observation_time: {
-    type: Date,
-    required: true,
-  },
-  observed_date: {
-    type: String,
-    enum: ["Spring", "Summer", "Fall", "Winter"],
-    required: true,
-  },
-  climate: {
-    type: String,
-    required: true,
-  },
-  taxon_group: {
-    type: String,
-    required: true,
-  },
-  road_condition: {
-    type: String,
-    required: true,
-  },
-  habitat_surrounding: {
-    type: String,
-    required: true,
-  },
-  type_of_road: {
-    type: String,
-    required: true,
-  },
-  traffic: {
-    type: String,
-    required: true,
-  },
-  image: {
-    type: String,
-    required: true,
-  },
-});
+  { timestamps: true }
+);
+WildlifeObservationSchema.index({ location: "2dsphere" });
 
 const WildlifeObservation = mongoose.model(
   "WildlifeObservation",
-  wildlifeObservationSchema
+  WildlifeObservationSchema
 );
-
 module.exports = WildlifeObservation;
